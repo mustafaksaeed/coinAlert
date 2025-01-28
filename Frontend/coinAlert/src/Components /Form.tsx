@@ -78,7 +78,13 @@ export default function Form() {
           <p style={{ color: "red", fontSize: "0.8rem" }}>{errors.price}</p>
         )}
 
-        <Button size="sm" variant="soft" color="neutral" type="submit">
+        <Button
+          size="sm"
+          variant="soft"
+          color="neutral"
+          type="submit"
+          style={{ width: "60%" }}
+        >
           Submit
         </Button>
         {success && (
