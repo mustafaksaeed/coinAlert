@@ -41,13 +41,14 @@ async function testDb() {
 
   await setValue("mustafa", "developer");
   const val2 = await getValue("mustafa");
+  console.log(val, val2);
 }
 
 testDb();
 
-// app.use(cors());
-// app.use(async (ctx) => {
-//   ctx.body = "check app";
-// });
+app.use(cors());
+app.use(async (ctx) => {
+  ctx.body = "check app";
+});
 
-// app.listen(3000);
+app.listen(3000);
