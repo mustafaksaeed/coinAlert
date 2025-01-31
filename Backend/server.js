@@ -4,11 +4,10 @@ const app = new Koa();
 const mongoose = require("mongoose");
 
 // function to connect to db
-async function connectDb() {
-  const db = await mongoose.connect("mongodb://127.0.0.1:27017/test");
-
-  return db;
-}
+await mongoose.connect(
+  "mongodb://admin:password@localhost:27017/test?authSource=admin",
+  { dbName: "test" } // Force the correct database
+);
 
 const kvSchema = new mongoose.Schema({
   key: String,
@@ -18,10 +17,14 @@ const kvSchema = new mongoose.Schema({
 const kvModel = mongoose.model("KV", kvSchema);
 
 // function to set value in db
-function setValue(key, value) {
-  const kvItem = new kvModel({ key: key, value: value, timestamp: new Date() });
-
-  return kvItem.save();
+async function setValue(key, value) {
+  try {
+    const kvItem = new KV({ key, value });
+    await kvItem.save();
+    console.log(`✅ Saved: ${key} = ${value}`);
+  } catch (err) {
+    console.error(`❌ Error saving ${key}:`, err.message);
+  }
 }
 
 async function getValue(key) {
@@ -43,6 +46,13 @@ async function testDb() {
   const val2 = await getValue("mustafa");
   console.log(val, val2);
 }
+
+mongoose.connection.on("connected", () => {
+  console.log("🔗 Mongoose connected to MongoDB!");
+});
+mongoose.connection.on("error", (err) => {
+  console.error("❌ Mongoose connection error:", err);
+});
 
 testDb();
 

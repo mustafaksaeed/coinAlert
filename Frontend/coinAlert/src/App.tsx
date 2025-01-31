@@ -5,7 +5,6 @@ import Form from "./Components /Form";
 import "./App.css";
 
 export default function App() {
-
   async function mustafaReq() {
     const response = await fetch("http://localhost:3000");
     const text = await response.text();
