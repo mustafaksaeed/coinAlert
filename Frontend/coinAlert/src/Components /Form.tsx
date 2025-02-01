@@ -3,6 +3,7 @@ import Bitcoin from "./Bitcoin";
 import EmailVerification from "./EmailVerification";
 import Threshold from "./Threshold";
 import Button from "@mui/joy/Button";
+import axios from "axios";
 
 export default function Form() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function Form() {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formErrors = { email: "", threshold: "", price: "" };
@@ -36,22 +37,33 @@ export default function Form() {
     if (!threshold) {
       formErrors.threshold = "Threshold is required.";
     } else if (Number(threshold) < 0) {
-      formErrors.threshold = "Threshold must be a greater than zero";
+      formErrors.threshold = "Threshold must be greater than zero.";
     } else if (Number(threshold) > price) {
       formErrors.threshold =
-        "Threshold must be a less than current Bitcoin price";
+        "Threshold must be less than the current Bitcoin price.";
     }
 
     setErrors(formErrors);
 
     // Submit form only if there are no errors
     if (!formErrors.email && !formErrors.threshold && !formErrors.price) {
-      console.log("Form submitted successfully with:", {
-        email,
-        threshold,
-        price,
-      });
-      setSuccess("form submitted successfully");
+      try {
+        // 👉 **Send Email & Threshold to Backend**
+        const response = await axios.post("http://localhost:3000/dashboard", {
+          email,
+          threshold: Number(threshold), // Ensure it's a number
+        });
+
+        // ✅ **Show success message**
+        setSuccess("✅ Form submitted successfully!");
+        setErrors({ email: "", threshold: "", price: "" });
+
+        console.log("Server Response:", response.data);
+      } catch (error) {
+        // ❌ **Handle API errors**
+        console.error("❌ Error submitting form:", error);
+        setSuccess("❌ Failed to submit. Please try again.");
+      }
     } else {
       setSuccess("");
     }
@@ -60,24 +72,25 @@ export default function Form() {
   return (
     <form onSubmit={handleSubmit} className="MainForm">
       <div className="innerform">
-        {/* Email input field */}
+        {/* 👉 Email input field */}
         <EmailVerification onEmailChange={setEmail} />
         {errors.email && (
           <p style={{ color: "red", fontSize: "0.8rem" }}>{errors.email}</p>
         )}
 
-        {/* Threshold input field */}
+        {/* 👉 Threshold input field */}
         <Threshold onThresholdChange={setThreshold} />
         {errors.threshold && (
           <p style={{ color: "red", fontSize: "0.8rem" }}>{errors.threshold}</p>
         )}
 
-        {/* Bitcoin price display */}
+        {/* 👉 Bitcoin price display */}
         <Bitcoin onBitcoinChange={setPrice} />
         {errors.price && (
           <p style={{ color: "red", fontSize: "0.8rem" }}>{errors.price}</p>
         )}
 
+        {/* 👉 Submit Button (Sends data to backend) */}
         <Button
           size="sm"
           variant="soft"
@@ -87,6 +100,8 @@ export default function Form() {
         >
           Submit
         </Button>
+
+        {/* 👉 Success Message */}
         {success && (
           <p style={{ color: "green", fontSize: "0.8rem" }}>{success}</p>
         )}

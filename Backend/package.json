@@ -10,7 +10,9 @@
   "description": "",
   "dependencies": {
     "@koa/cors": "^5.0.0",
+    "@koa/router": "^13.1.0",
     "koa": "^2.15.3",
+    "koa-bodyparser": "^4.4.1",
     "mongoose": "^8.9.5"
   }
 }
