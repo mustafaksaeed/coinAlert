@@ -10,7 +10,7 @@ const router = new Router();
 // Connect to MongoDB
 async function connectDb() {
   await mongoose.connect(
-    "mongodb://admin:password@localhost:27017/test?authSource=admin",
+    "mongodb://admin:secret@localhost:27017/test?authSource=admin",
     { dbName: "test" }
   );
   console.log("✅ MongoDB connected successfully!");
@@ -66,3 +66,5 @@ app.listen(PORT, () => {
 
 console.log("Available Routes:");
 router.stack.forEach((route) => console.log(route.path));
+
+//mongoose makes extra functions

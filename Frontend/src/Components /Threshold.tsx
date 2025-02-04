@@ -11,11 +11,11 @@ export default function Threshold({
 
   return (
     <div className="threshold">
-      <label>Threshold:</label>
+      <label>Dip:</label>
       <Input
         style={{ marginTop: "0.2rem", marginBottom: "0.1rem" }}
         type="number"
-        id="email"
+        id="threshold"
         placeholder="Enter threshold"
         onChange={handleChange}
         variant="outlined"
